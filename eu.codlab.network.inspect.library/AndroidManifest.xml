@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.eu.codlab.network.inspect.library"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme" >
+        <!-- 
+        
+        This manifest is empty
+        
+        to use this library
+        
+        copy the tcpdump.jpeg file in your assets app folder
+        add 
+                <service android:name="eu.codlab.network.inspect.library.DumpService" />
+        in your <application></application> to enable the service starting
+        
+        and start the service of course, you can directly use the TcpDumpManager
+        
+        This library is absolutely not finished, but i wanted to release an pre-alpha version to
+        set up the repository etc...
+         -->
+    </application>
+
+</manifest>
