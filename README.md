@@ -3,7 +3,18 @@ android_network_inspect_library
 
 Simple library to help inspecting your network data
 
-to use this library
+
+Access infos about WIFI/RADIO
+=============================
+
+If you want to use the NetCfg class, you will need to add the android INTERNET permission in the app manifest
+
+but for the other class in this package, no need for specific modification
+
+TCPDUMP
+=======
+
+to use the TCPDUMP PART
         
 copy the tcpdump.jpeg file in your assets app folder
 add 

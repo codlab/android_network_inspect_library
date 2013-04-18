@@ -1,8 +1,6 @@
-package eu.codlab.network.inspect.library;
+package eu.codlab.network.inspect.library.tcpdump;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +87,7 @@ public class DumpService extends Service implements TcpDumpListener{
 
 		_manager = null;
 	}
+
 
 
 	public String listNet(){

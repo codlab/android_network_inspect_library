@@ -12,10 +12,12 @@
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme" >
         <!-- 
+        To use the NetCfg class, use the <uses-permission android:name="android.permission.INTERNET" />
+        But to retrieve specific infos such as wlan0, etc.. no need for it
         
         This manifest is empty
         
-        to use this library
+        to use the tcpdump package (only) use the following instructions :
         
         copy the tcpdump.jpeg file in your assets app folder
         add 

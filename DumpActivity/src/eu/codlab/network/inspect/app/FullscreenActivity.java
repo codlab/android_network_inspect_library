@@ -1,14 +1,15 @@
 package eu.codlab.network.inspect.app;
 
 import eu.codlab.network.inspect.app.util.SystemUiHider;
-import eu.codlab.network.inspect.library.DumpService;
+import eu.codlab.network.inspect.library.kernel.NetCfg;
+import eu.codlab.network.inspect.library.kernel.WifiStatisticsInfo;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -51,11 +52,14 @@ public class FullscreenActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//proof root ability<s
+		//Intent i = new Intent(this, DumpService.class);
+		//this.startService(i);
+		NetCfg cfg = new NetCfg();
+		Log.d("INFO",cfg.getNetCfgDumpUp());
 		
-		Intent i = new Intent(this, DumpService.class);
-		this.startService(i);
-		
-		
+		WifiStatisticsInfo info = new WifiStatisticsInfo("wlan0");
+		Log.d("INFO WIFI", info.getRXBytes()+"");
 		setContentView(R.layout.activity_fullscreen);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);

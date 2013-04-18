@@ -5,8 +5,6 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import android.util.Log;
-
 public class SH {
 
 	private String SHELL = "sh";
@@ -31,20 +29,20 @@ public class SH {
 
 	private String getStreamLines(InputStream is) {
 		String out = null;
-		StringBuffer buffer = null;
+		StringBuffer buffer = new StringBuffer(4096);
 		BufferedReader reader = new BufferedReader (new InputStreamReader(is));
 
 		String line ="";
 		try {
 			while ((line = reader.readLine ()) != null) {
-				Log.d("APP","Stdout: " + line);
+				buffer.append(line+"\n");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		if (buffer != null)
 			out = buffer.toString();
-		return "";
+		return out;
 	}
 
 

@@ -1,4 +1,4 @@
-package eu.codlab.network.inspect.library;
+package eu.codlab.network.inspect.library.tcpdump;
 
 public interface TcpDumpListener {
 	public void onPacket(String src, String dst, PacketType type, int length);
