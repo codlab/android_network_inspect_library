@@ -23,10 +23,10 @@ public class RmnetStatisticsInfo {
 		return DumpKernelVariableHelper.dump(_cmd_base+file);
 	}
 	
-	private int getInt(String toInt){
-		int res = -1;
+	private long getLong(String toLong){
+		long res = -1;
 		try{
-			res = Integer.parseInt(toInt.replace("\n", ""));
+			res = Long.parseLong(toLong.replace("\n", ""));
 		}catch(Exception e){
 			
 		}
@@ -38,93 +38,93 @@ public class RmnetStatisticsInfo {
 	 * Number of Bytes Read since start
 	 * @return number of bytes
 	 */
-	public int getRXBytes(){
-		return getInt(dump("rx_bytes"));
+	public long getRXBytes(){
+		return getLong(dump("rx_bytes"));
 	}
 
-	public int getRXCompressed(){
-		return getInt(dump("rx_compressed"));
+	public long getRXCompressed(){
+		return getLong(dump("rx_compressed"));
 	}
 
-	public int getRXCRCErrors(){
-		return getInt(dump("rx_crc_errors"));
+	public long getRXCRCErrors(){
+		return getLong(dump("rx_crc_errors"));
 	}
 
-	public int getRXDropped(){
-		return getInt(dump("rx_dropped"));
+	public long getRXDropped(){
+		return getLong(dump("rx_dropped"));
 	}
 
-	public int getRXErrors(){
-		return getInt(dump("rx_errors"));
+	public long getRXErrors(){
+		return getLong(dump("rx_errors"));
 	}
 
-	public int getRXFifoErrors(){
-		return getInt(dump("rx_fifo_errors"));
+	public long getRXFifoErrors(){
+		return getLong(dump("rx_fifo_errors"));
 	}
 
-	public int getRXFrameErrors(){
-		return getInt(dump("rx_frame_errors"));
+	public long getRXFrameErrors(){
+		return getLong(dump("rx_frame_errors"));
 	}
 	
-	public int getRXLengthErrors(){
-		return getInt(dump("rx_length_errors"));
+	public long getRXLengthErrors(){
+		return getLong(dump("rx_length_errors"));
 	}
 	
-	public int getRXMissedErrors(){
-		return getInt(dump("rx_missed_errors"));
+	public long getRXMissedErrors(){
+		return getLong(dump("rx_missed_errors"));
 	}
 	
-	public int getRXOverErrors(){
-		return getInt(dump("rx_over_errors"));
+	public long getRXOverErrors(){
+		return getLong(dump("rx_over_errors"));
 	}
 	
-	public int getRXPackets(){
-		return getInt(dump("rx_packets"));
+	public long getRXPackets(){
+		return getLong(dump("rx_packets"));
 	}
 	
 
-	public int getTXMissedErrors(){
-		return getInt(dump("tx_aborted_errors"));
+	public long getTXMissedErrors(){
+		return getLong(dump("tx_aborted_errors"));
 	}
 	
 	/**
 	 * Number of Bytes Sent since start
 	 * @return number of bytes
 	 */
-	public int getTXBytes(){
-		return getInt(dump("tx_bytes"));
+	public long getTXBytes(){
+		return getLong(dump("tx_bytes"));
 	}
 
-	public int getTXCarrierErrors(){
-		return getInt(dump("tx_carrier_errors"));
+	public long getTXCarrierErrors(){
+		return getLong(dump("tx_carrier_errors"));
 	}
 	
-	public int getTXCompressed(){
-		return getInt(dump("tx_compressed"));
+	public long getTXCompressed(){
+		return getLong(dump("tx_compressed"));
 	}
 
-	public int getTXDropped(){
-		return getInt(dump("tx_dropped"));
+	public long getTXDropped(){
+		return getLong(dump("tx_dropped"));
 	}
 
-	public int getTXErrors(){
-		return getInt(dump("tx_errors"));
+	public long getTXErrors(){
+		return getLong(dump("tx_errors"));
 	}
 
-	public int getTXFifoErrors(){
-		return getInt(dump("tx_fifo_errors"));
+	public long getTXFifoErrors(){
+		return getLong(dump("tx_fifo_errors"));
 	}
 
-	public int getTXHeartBeatErrors(){
-		return getInt(dump("tx_heartbeat_errors"));
+	public long getTXHeartBeatErrors(){
+		return getLong(dump("tx_heartbeat_errors"));
 	}
 	
-	public int getTXPackets(){
-		return getInt(dump("tx_packets"));
+	public long getTXPackets(){
+		return getLong(dump("tx_packets"));
 	}
 
-	public int getTXWindowErrors(){
-		return getInt(dump("tx_window_errors"));
+	public long getTXWindowErrors(){
+		return getLong(dump("tx_window_errors"));
 	}
 	
 }
