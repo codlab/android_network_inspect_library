@@ -5,4 +5,20 @@
     <string name="service_start">Start inspection !</string>
     <string name="service_stop">Stop it dude !</string>
 
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    
+    <string name="title_section_service">Service</string>
+    <string name="title_section_graph">Graphique</string>
+    
+    <string name="dialog_donation_title">Donation</string>
+    <string name="dialog_donation_message">You can contribute to this app by making a simple play-store in app donation</string>
+    <string name="dialog_donation_no_thx">No Thx</string>
+    <string name="dialog_donation_mini">Small One</string>
+    <string name="dialog_donation_max">Big One</string>
+    
+    <string name="purchased_don1">Thanks for purchasing the Small Donation !</string>
+    <string name="purchased_don2">Thanks for purchasing the BIG Donation !</string>
+    
+    <string name="make_donation">Make a donation</string>
 </resources>

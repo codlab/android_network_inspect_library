@@ -6,31 +6,12 @@ package eu.codlab.network.inspect.library.kernel;
  * @author codlab
  *
  */
-public class RmnetStatisticsInfo {
-	private String _cmd_base = "/sys/class/net/%s/statistics/";
+public class RmnetStatisticsInfo extends AbstractStatisticsInfo{
 	private String _interface_info;
+	
 	public RmnetStatisticsInfo(String interface_name){
-		if(interface_name == null)
-			throw new NullPointerException("Dafuk did youd do? You were the chosen one! :'(");
+		super(interface_name);
 		
-		
-		_interface_info = interface_name;
-		_cmd_base = _cmd_base.replace("%s",_interface_info);
-		
-	}
-	
-	private String dump(String file){
-		return DumpKernelVariableHelper.dump(_cmd_base+file);
-	}
-	
-	private long getLong(String toLong){
-		long res = -1;
-		try{
-			res = Long.parseLong(toLong.replace("\n", ""));
-		}catch(Exception e){
-			
-		}
-		return res;
 	}
 
 

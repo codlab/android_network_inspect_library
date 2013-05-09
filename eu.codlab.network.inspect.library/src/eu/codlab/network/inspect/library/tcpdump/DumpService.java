@@ -27,7 +27,7 @@ public class DumpService extends Service implements TcpDumpListener{
 		super.onStartCommand(intent, flags, startId);
 		notificationManager =
 				(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notification = new Notification(R.drawable.radio,getString(R.string.dump_notification),System.currentTimeMillis());
+		//notification = new Notification(R.drawable.radio,getString(R.string.dump_notification),System.currentTimeMillis());
 		start();
 
 		return Service.START_NOT_STICKY;
@@ -197,8 +197,8 @@ public class DumpService extends Service implements TcpDumpListener{
 		
 		PendingIntent pendingIntent = PendingIntent.getService(this, 21, new Intent(this, DumpService.class), 0);
 
-		notification.setLatestEventInfo(this, getString(R.string.dump_notification), ""+length, pendingIntent);
-		notificationManager.notify(42, notification);
+		//notification.setLatestEventInfo(this, getString(R.string.dump_notification), ""+length, pendingIntent);
+		//notificationManager.notify(42, notification);
 	}
 	
 	/**
