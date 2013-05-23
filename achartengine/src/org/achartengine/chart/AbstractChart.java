@@ -211,12 +211,18 @@ public abstract class AbstractChart implements Serializable {
   }
 
   private String getNormalized(double value){
-    if(value > 1000000)
-      return Math.round(value/1000000)+"k";
-    else if(value > 1000)
-      return Math.round(value/1000)+"k";
-    else
-      return value+"";
+    double tmp=value;
+    if(value > 1000000000){
+      tmp /= 1000;
+      return "  "+(Math.round(tmp*1./10000)*1./100)+"G";
+    }else if(value > 1000000){
+      tmp/= 1000;
+      return "  "+(Math.round(tmp*1./10)*1./100)+"M";
+    }else if(value > 1000){
+      return "  "+(Math.round(value/10)/100)+"K";
+    }else{
+      return "  "+value;
+    }
   }
   /**
    * Makes sure the fraction digit is not displayed, if not needed.

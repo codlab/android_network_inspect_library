@@ -10,14 +10,11 @@
 	<property name="src.dir" location="${src_root.dir}/src/"/>
 	<property name="demo.dir" location="${src_root.dir}/demo/"/>	
 	<property name="lib.dir" location="${basedir}/lib"/>
-	<property name="src_unit_test.dir" location="${basedir}/test/unit/src/${achartengine.package}"/>
-	
+
 	<property name="name.build.dir" value="build"/>
     <property name="name.build.project.dir" value="${name.build.dir}/bin"/>
     <property name="build.dir" location="${name.build.dir}"/>
     <property name="build.project.dir" location="${name.build.project.dir}"/>
-    <property name="build.tests.dir" location="${build.dir}/bin/test/unit"/>
-	<property name="report.tests.unit.dir" location="${build.dir}/reports/test/unit"/>
 	<property name="report.lint.dir" location="${build.dir}/reports/lint"/>
     <property name="doc.dir" location="${build.dir}/docs"/>
     <property name="jar.dest.dir" location="${build.dir}/lib"/>	
@@ -28,9 +25,6 @@
     ============================================================================-->
     <path id="project.classpath">
         <pathelement location="${build.project.dir}"/>
-    </path>
-    <path id="tests.classpath">
-        <pathelement location="${build.tests.dir}"/>
     </path>
     <path id="junit.classpath">
          <pathelement location="${lib.dir}/junit-3.8.1.jar"/>
@@ -43,7 +37,7 @@
         here are the targets to compile the project files
     ============================================================================-->
 	<target name="all"
-	    depends="clean, compile, test, lib, javadoc"
+	    depends="clean, compile, lib, javadoc"
 	    description="Does all targets related to unit tests. Also performs builds jar file and javadoc.">
 	</target>	
 	
@@ -66,58 +60,6 @@
                 <path refid="android.classpath" />
             </classpath>
         </javac>
-    </target>
-
-    <target name="compile-tests" depends="compile"
-            description="Compile the project unit test Java files.">
-        <javac srcdir="${src_unit_test.dir}" destdir="${build.tests.dir}"
-               failonerror="yes" debug="true" debuglevel="lines,vars,source" source="1.6" >
-
-            <compilerarg value="-Xlint" />
-            <compilerarg value="-Xlint:-serial" />
-            <compilerarg value="-Xstdout" />
-            <compilerarg value="${report.lint.dir}/lint_tests.txt" />
-
-            <classpath>
-                <path refid="project.classpath" />
-                <path refid="android.classpath" />
-                <path refid="junit.classpath" />
-            </classpath>
-
-        </javac>
-    </target>
-
-	
-	<!--===========================================================================
-	        perform the unit tests
-	    ============================================================================-->
-	<target name="test-failed" depends="test-unit" if="test.failure">
-		<fail message="unit tests failed"/>
-	</target>
-	
-	<target name="test" depends="test-failed" />
-	
-    <target name="test-unit" depends="clean, compile-tests" description="Run the unit tests.">
-        <junit haltonfailure="off" haltonerror="off" failureproperty="test.failure"
-        	   errorproperty="test.failure" fork="yes">
-            <assertions refid="project.assertions" />
-
-            <classpath>
-                <path refid="tests.classpath" />
-                <path refid="project.classpath" />
-                <path refid="junit.classpath" />
-            </classpath>
-
-            <formatter type="xml" />
-
-            <batchtest todir="${report.tests.unit.dir}">
-                <fileset dir="${build.tests.dir}" includes="**/*Test.class"/>
-            </batchtest>
-        </junit>
-
-        <echo>
-            This build was initialized at ${start.time}
-        </echo>
     </target>
 
     <!--===========================================================================
@@ -189,7 +131,7 @@
 		</zip>
 	</target>
 	
-	<target name="dist" depends="clean, init, test, lib, demo, javadoc">
+	<target name="dist" depends="clean, init, lib, demo, javadoc">
        <copy todir="${dist.dir}">
 	     <fileset dir="${jar.dest.dir}">
 	       <include name="**/*"/>
@@ -208,10 +150,8 @@
         </tstamp>
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build.project.dir}"/>
-        <mkdir dir="${build.tests.dir}"/>
         <mkdir dir="${doc.dir}"/>
         <mkdir dir="${report.lint.dir}"/>
-    	<mkdir dir="${report.tests.unit.dir}"/>
         <mkdir dir="${jar.dest.dir}"/>
         <mkdir dir="${dist.dir}"/>
     	<mkdir dir="${build.dir}/src"/>

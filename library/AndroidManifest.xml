@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.eu.codlab.network.inspect.library"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="14" />
+
+    <application
+        android:allowBackup="true" >
+        <!-- 
+        To use the NetCfg class, use the <uses-permission android:name="android.permission.INTERNET" />
+        But to retrieve specific infos such as wlan0, etc.. no need for it
+        
+        This manifest is empty
+        
+        to use the tcpdump package (only) use the following instructions :
+        
+        copy the tcpdump.jpeg file in your assets app folder
+        add 
+                <service android:name="eu.codlab.network.inspect.library.DumpService" />
+        in your <application></application> to enable the service starting
+        
+        and start the service of course, you can directly use the TcpDumpManager
+        
+        This library is absolutely not finished, but i wanted to release an pre-alpha version to
+        set up the repository etc...
+         -->
+    </application>
+
+</manifest>

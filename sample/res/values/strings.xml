@@ -1,0 +1,18 @@
+<resources>
+	<string name="app_name">Dump my Interfaces</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    
+    <string name="service_start">Start Inspecting</string>
+    <string name="service_stop">Stop Inspecting</string>
+    <string name="make_donation">Donation</string>
+    <string name="dialog_donation_title">Donation</string>
+    <string name="dialog_donation_message">You can contribute to this app by making a simple play-store in app donation</string>
+    <string name="dialog_donation_no_thx">No Thx</string>
+    <string name="dialog_donation_mini">Small One</string>
+    <string name="dialog_donation_max">Big One</string>
+    <string name="title_section_service">Service</string>
+    <string name="title_section_graph">Graphique</string>
+    <string name="purchased_don1">Thanks for having purchased a donation</string>
+    <string name="purchased_don2">Thanks for having purchased a donation</string>
+</resources>
