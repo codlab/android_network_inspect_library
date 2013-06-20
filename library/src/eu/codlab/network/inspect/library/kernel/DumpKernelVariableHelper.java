@@ -14,9 +14,7 @@ public class DumpKernelVariableHelper {
 	public static String dump(String file){
 		String res = "";
 		synchronized(_this){
-			if(_sh == null){
-				_sh = new SH("sh");
-			}
+			if(_sh == null)_sh = new SH("sh");
 			res = _sh.runWaitFor("cat "+file).stdout;
 		}
 		return res;

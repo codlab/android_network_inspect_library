@@ -146,7 +146,7 @@ IabHelper.OnIabPurchaseFinishedListener, OnConsumeFinishedListener{
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.main.donation:
+        case R.id.main_donation:
         	this.createDonationDialog(false, false);
             return true;
         default:

@@ -813,6 +813,7 @@ public class IabHelper {
 
         do {
             logDebug("Calling getPurchases with continuation token: " + continueToken);
+            if(mService == null || mContext == null)continue;
             Bundle ownedItems = mService.getPurchases(3, mContext.getPackageName(),
                     itemType, continueToken);
 

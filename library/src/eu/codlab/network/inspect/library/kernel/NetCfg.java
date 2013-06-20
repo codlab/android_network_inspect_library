@@ -96,15 +96,15 @@ public class NetCfg {
 	public String getNetCfgDumpUp(){
 		CommandResult res = _sh.runWaitFor("netcfg");
 		String stdout = DumpKernelVariableHelper.dump_trim_out(res.stdout);//res.stderr+ " "+res.stdout;
-		String ret = "";
+        StringBuffer ret = new StringBuffer(4096);
 		String [] stdoutsplitted = stdout.split("\n");
 		for(int i = 0; i < stdoutsplitted.length; i ++){
 			String [] linesplitted = stdoutsplitted[i].split(" ");
 			if(linesplitted.length > 1 && "UP".equals(linesplitted[1])){
-				ret+=stdoutsplitted[i]+"\n";
+				ret.append(stdoutsplitted[i]+"\n");
 			}
 		}
-		return ret;
+		return ret.toString();
 	}
 
 	/**
@@ -116,13 +116,13 @@ public class NetCfg {
 	public String getNetCfgDumpDown(){
 		CommandResult res = _sh.runWaitFor("netcfg");
 		String stdout = DumpKernelVariableHelper.dump_trim_out(res.stdout);//res.stderr+ " "+res.stdout;
-		String ret = "";
+		StringBuffer ret = new StringBuffer(4096);
 		String [] stdoutsplitted = stdout.split("\n");
 		for(int i = 0; i < stdoutsplitted.length; i ++){
 			String [] linesplitted = stdoutsplitted[i].split(" ");
 			if(linesplitted.length > 1 && "DOWN".equals(linesplitted[1]))
-				ret+=stdoutsplitted[i]+"\n";
+				ret.append(stdoutsplitted[i]+"\n");
 		}
-		return ret;
+		return ret.toString();
 	}
 }

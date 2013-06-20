@@ -21,8 +21,14 @@ public class GraphFragment extends SherlockFragment{
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState){
-		RealTimeLayout real = (RealTimeLayout)view.findViewById(R.id.graph);
-		InterfacesManager manager = new InterfacesManager(getActivity());
+		final RealTimeLayout real = (RealTimeLayout)view.findViewById(R.id.graph);
+        real.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                real.onClick();
+            }
+        });
+        InterfacesManager manager = new InterfacesManager(getActivity());
 		ArrayList<Interface> _interfaces = manager.getInterfaces();
 		for(Interface _if : _interfaces){
 			real.add(_if.name, _if);

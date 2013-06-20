@@ -33,9 +33,14 @@ public class RmnetStatisticsInfo extends AbstractStatisticsInfo{
 		return getLong(dump("rx_bytes"));
 	}
 
+    /**
+     * Number of Bytes compressed received
+     * @return number of bytes
+     */
 	public long getRXCompressed(){
 		return getLong(dump("rx_compressed"));
 	}
+
 
 	public long getRXCRCErrors(){
 		return getLong(dump("rx_crc_errors"));

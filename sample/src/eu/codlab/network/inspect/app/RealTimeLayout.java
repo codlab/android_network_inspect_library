@@ -3,10 +3,12 @@ package eu.codlab.network.inspect.app;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.Executor;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.PointStyle;
+import org.achartengine.model.SeriesSelection;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -16,11 +18,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import eu.codlab.network.inspect.library.bdd.Data;
 import eu.codlab.network.inspect.library.bdd.DataUpDown;
 import eu.codlab.network.inspect.library.bdd.Interface;
@@ -36,13 +42,13 @@ public class RealTimeLayout extends LinearLayout{
 	private GraphicalView view;
 	private ArrayList<Thread> mThread;
 	private final int colors[]=new int[]{
-			Color.BLUE,
+			0xff66cd00,
 			Color.RED,
-			Color.CYAN,
+			0xff0092e9,
 			Color.GREEN,
 			Color.GRAY,
 			Color.MAGENTA,
-			Color.YELLOW,
+			0xffe0fe07,
 			Color.BLACK,
 			Color.DKGRAY,
 			Color.LTGRAY};
@@ -69,25 +75,42 @@ public class RealTimeLayout extends LinearLayout{
 		renderer.setChartTitleTextSize(15);
 		renderer.setFitLegend(true);
 		renderer.setGridColor(Color.LTGRAY);
-		renderer.setPanEnabled(true, true);
-		//renderer.setPanLimits(new double[]{0, Double.MAX_VALUE, -1, Double.MAX_VALUE});
-		renderer.setPointSize(0);
-		renderer.setYAxisMin(0);
-		renderer.setLabelsTextSize(18);
+        renderer.setInScroll(true);
+        renderer.setMargins(new int[]{40,40,40,40});
+        renderer.setPaddings(new int[]{30,40,40,40});
+		renderer.setPointSize(6);
+		renderer.setYAxisMin(-200);
+        renderer.setShowGrid(true);
+        renderer.setShowGridY(false);
+        renderer.setPanLimits(new double[]{0, Double.MAX_VALUE, -200, Double.MAX_VALUE});
+        renderer.setPanEnabled(true,false);
+		renderer.setLabelsTextSize(12);
+        renderer.setLegendTextSize(25);
 		//renderer.setClickEnabled(true);
+        renderer.setZoomY0Based(true);
+        renderer.setZoomEnabled(true,false);
 		renderer.setXTitle("Temps");
 		renderer.setYTitle("Nombre");
+        renderer.setXLabels(6);
 		//renderer.setMargins( new int []{20, 30, 15, 0});
 		renderer.setZoomButtonsVisible(true);
 		renderer.setBarSpacing(10);
-		renderer.setShowGrid(true);
 
 
 
-		view = ChartFactory.getTimeChartView(_context, dataset, renderer,"HH"+":mm MM/dd/yyyy");
+		view = ChartFactory.getTimeChartView(_context, dataset, renderer,"Time", true, true);//"HH"+":mm MM/dd/yyyy"
 		view.refreshDrawableState();
 		view.repaint();
-		addView(view); 
+
+        addView(view);
+
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RealTimeLayout.this.onClick();
+            }
+        });
 
 		Thread t = new Thread(){
 			@Override
@@ -107,6 +130,24 @@ public class RealTimeLayout extends LinearLayout{
 		};
 		t.start();
 	}
+
+    public void onClick(){
+
+        SeriesSelection seriesSelection = view.getCurrentSeriesAndPoint();
+        double[] xy = view.toRealPoint(0);
+
+        if (seriesSelection == null) {
+            Toast.makeText(RealTimeLayout.this._context, "No chart element was clicked", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            Toast.makeText(
+                    RealTimeLayout.this._context,
+                    "Chart element in series index " + seriesSelection.getSeriesIndex()
+                            + " data point index " + seriesSelection.getPointIndex() + " was clicked"
+                            + " closest point value X=" + seriesSelection.getXValue() + ", Y=" + seriesSelection.getValue()
+                            + " clicked point value X=" + (float) xy[0] + ", Y=" + (float) xy[1], Toast.LENGTH_SHORT).show();
+        }
+    }
 	public RealTimeLayout(Context context) {
 		super(context);
 		init(context);
@@ -155,7 +196,7 @@ public class RealTimeLayout extends LinearLayout{
 		}
 
 		public void postDelayedDownload(){
-			_handler.postDelayed(_run, 5000);
+			//_handler.postDelayed(_run, 5000);
 		}
 
 		public void setLastTime(long time){
@@ -179,7 +220,11 @@ public class RealTimeLayout extends LinearLayout{
 			public void run(){
 				Download _dl= new Download(AbstractUpdateThread.this,
 						_interface);
-				_dl.execute();
+                if(Build.VERSION.SDK_INT > 10){
+                    _dl.executeOnExecutor(Download.THREAD_POOL_EXECUTOR);
+                }else{
+    				_dl.execute();
+                }
 			}
 		};
 
@@ -214,28 +259,40 @@ public class RealTimeLayout extends LinearLayout{
 	}
 
 	public void add(String name, Interface interface_){
-		TimeSeries new_series_up = new TimeSeries(name+" up");
-		TimeSeries new_series_down = new TimeSeries(name+" down");
-		XYSeriesRenderer new_renderer_up = new XYSeriesRenderer();
-		XYSeriesRenderer new_renderer_down = new XYSeriesRenderer();
-		//rendererSeries.size() >> avant l'ajout et 0 based donc si modif v&eacute;rifier
-		new_renderer_up.setColor(colors[ rendererSeries.size() % colors.length]);
-		new_renderer_up.setFillPoints(false);
-		new_renderer_up.setPointStyle(PointStyle.POINT);
-		new_renderer_up.setLineWidth(2);
 
-		new_renderer_down.setColor(colors[ (rendererSeries.size()+1) % colors.length]);
-		new_renderer_down.setFillPoints(false);
-		new_renderer_down.setPointStyle(PointStyle.POINT);
-		new_renderer_down.setLineWidth(2);
-		addThread(new_series_up, new_series_down, interface_);
-		
-		rendererSeries.add(new_renderer_up);
-		rendererSeries.add(new_renderer_down);
-		renderer.addSeriesRenderer(new_renderer_up);
-		renderer.addSeriesRenderer(new_renderer_down);
-		dataset.addSeries(new_series_up);
-		dataset.addSeries(new_series_down);
+        TimeSeries new_series_up = new TimeSeries(name+" up");
+        int color = colors[ rendererSeries.size() % colors.length];
+        if(true || (interface_.name != null && interface_.name.indexOf("battery") < 0)){
+            color = colors[ rendererSeries.size() % colors.length];
+            //rendererSeries.size() >> avant l'ajout et 0 based donc si modif v&eacute;rifier
+            XYSeriesRenderer new_renderer_up = new XYSeriesRenderer();
+		    new_renderer_up.setColor(color);
+		    new_renderer_up.setFillPoints(true);
+		    new_renderer_up.setPointStyle(PointStyle.POINT);
+            new_renderer_up.setFillBelowLine(true);
+            new_renderer_up.setFillBelowLineColor(0x22ffffff & color);
+		    new_renderer_up.setLineWidth(5);
+            rendererSeries.add(new_renderer_up);
+            renderer.addSeriesRenderer(new_renderer_up);
+            dataset.addSeries(new_series_up);
+        }
+
+        //hidden if battery
+        TimeSeries new_series_down = new TimeSeries(name+" down");
+        if(true && (interface_.name != null && interface_.name.indexOf("battery") < 0)){
+            color = colors[ rendererSeries.size() % colors.length];
+            XYSeriesRenderer new_renderer_down = new XYSeriesRenderer();
+            new_renderer_down.setColor(color);
+            new_renderer_down.setFillPoints(true);
+            new_renderer_down.setPointStyle(PointStyle.POINT);
+            new_renderer_down.setLineWidth(5);
+            new_renderer_down.setFillBelowLine(true);
+            new_renderer_down.setFillBelowLineColor(0x22ffffff & color);
+    	    rendererSeries.add(new_renderer_down);
+            renderer.addSeriesRenderer(new_renderer_down);
+            dataset.addSeries(new_series_down);
+        }
+        addThread(new_series_up, new_series_down, interface_);
 	}
 
 	private class Download extends AsyncTask{

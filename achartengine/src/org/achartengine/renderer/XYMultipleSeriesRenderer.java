@@ -919,6 +919,23 @@ public class XYMultipleSeriesRenderer extends DefaultRenderer {
     mZoomLimits = zoomLimits;
   }
 
+    private boolean _is_zoom_x_0based;
+    public boolean isZoomX0Based(){
+        return _is_zoom_x_0based;
+    }
+
+    public void setZoomX0Based(boolean state){
+        _is_zoom_x_0based = state;
+    }
+
+    private boolean _is_zoom_y_0based;
+    public boolean isZoomY0Based(){
+        return _is_zoom_y_0based;
+    }
+
+    public void setZoomY0Based(boolean state){
+        _is_zoom_y_0based = state;
+    }
   /**
    * Returns the rotation angle of labels for the X axis.
    * 

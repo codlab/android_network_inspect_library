@@ -124,7 +124,32 @@ public class ChartFactory {
     return new GraphicalView(context, chart);
   }
 
-  /**
+    /**
+     * Creates a time chart view.
+     *
+     * @param context the context
+     * @param dataset the multiple series dataset (cannot be null)
+     * @param renderer the multiple series renderer (cannot be null)
+     * @param format the date format pattern to be used for displaying the X axis
+     *          date labels. If null, a default appropriate format will be used.
+     * @param autoadapt set if when displayed, series will autoadapt min/max to the height
+     * @param scroll_android_api boolean indicating if the android api will be used to manage scroll
+     * @return a time chart graphical view
+     * @throws IllegalArgumentException if dataset is null or renderer is null or
+     *           if the dataset and the renderer don't include the same number of
+     *           series
+     */
+    public static final GraphicalView getTimeChartView(Context context,
+                                                       XYMultipleSeriesDataset dataset, XYMultipleSeriesRenderer renderer, String format, boolean autoadapt, boolean scroll_android_api) {
+        checkParameters(dataset, renderer);
+        TimeChart chart = new TimeChart(dataset, renderer);
+        chart.setAutoAdapt(autoadapt);
+        chart.setDateFormat(format);
+        return new GraphicalView(context, chart, scroll_android_api);
+    }
+
+
+    /**
    * Creates a time chart view.
    * 
    * @param context the context

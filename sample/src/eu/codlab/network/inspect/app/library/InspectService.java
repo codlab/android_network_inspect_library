@@ -2,11 +2,13 @@ package eu.codlab.network.inspect.app.library;
 
 import java.util.ArrayList;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -21,6 +23,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import eu.codlab.network.inspect.app.R;
 import eu.codlab.network.inspect.library.bdd.InterfacesManager;
+import eu.codlab.network.inspect.library.kernel.DumpKernelVariableHelper;
 import eu.codlab.network.inspect.library.kernel.NetCfg;
 import eu.codlab.network.inspect.library.kernel.NetCfg.FastInfos;
 import eu.codlab.network.inspect.library.kernel.RmnetStatisticsInfo;
@@ -55,6 +58,7 @@ public class InspectService extends Service {
 	private LinearLayout _top_view_data;
 	private Handler _scanner;
 	private ArrayList<InterfaceInfo> _interfaces;
+    private Batterie _batterie;
 
 	private final static int REFRESH_INTERVAL_MS = 2500;
 
@@ -129,10 +133,27 @@ public class InspectService extends Service {
 		manageGetInfos(false);
 	}
 
+    private void manageGetInfosBatterie(boolean save){
+        if(_batterie.just_changed || save == true){
+            //need store
+            getManager().addData(getManager().getInterface(_batterie.name), (long)_batterie.percent, 0);
+            _batterie.just_changed = false;
+        }
+
+        if(_batterie.added == true){
+            String name = _batterie.name+" ";
+            String val=" "+_batterie.percent+"%";
+            _batterie.view_name.setText(name);
+            _batterie.view_data.setText(val);
+        }
+    }
 	private void manageGetInfos(boolean save){
 		synchronized(this){
 			String val="";
 			String name="";
+
+            manageGetInfosBatterie(save);
+
 			for(InterfaceInfo _if : _interfaces){
 
 				if(_if.just_changed || save == true){
@@ -159,6 +180,8 @@ public class InspectService extends Service {
 	private void manageClean(){
 		log("manageClean");
 		synchronized(this){
+            removeView(_top_view_name, _batterie.view_name);
+            removeView(_top_view_name, _batterie.view_data);
 			for(InterfaceInfo _if : _interfaces){
 				if(_if.added == true){
 					removeView(_top_view_name, _if.view_name);
@@ -172,6 +195,34 @@ public class InspectService extends Service {
 		Log.d(TAG,string);
 	}
 
+    private void manageListBatterie(){
+        if(_batterie == null){
+            _batterie = new Batterie();
+            _batterie.viewed = true;
+            _batterie.name = "battery";
+            _batterie.view_name = new TextView(this);
+            _batterie.view_name.setTextColor(0xffffffff);
+            _batterie.view_data = new TextView(this);
+            _batterie.view_data.setTextColor(0xffffffff);
+            _batterie.added = true;
+            addView(_top_view_name, _batterie.view_name);
+            addView(_top_view_data, _batterie.view_data);
+            _batterie.view_name.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 7);
+            _batterie.view_data.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 7);
+
+            try{
+                _batterie.percent = Double.parseDouble(DumpKernelVariableHelper.dump("/sys/class/power_supply/battery/capacity"));
+            }catch(Exception e){}
+
+            _batterie.just_changed = true;
+
+            getManager().serviceNew(_batterie);
+        }else{
+            try{
+            _batterie.percent = Double.parseDouble(DumpKernelVariableHelper.dump("/sys/class/power_supply/battery/capacity"));
+            }catch(Exception e){}
+        }
+    }
 	/*
 	 * scenarios
 	 * interface > presente dans vue
@@ -179,6 +230,8 @@ public class InspectService extends Service {
 	 */
 	private void manageList(ArrayList<FastInfos> _if_list){
 		synchronized(this){
+
+            manageListBatterie();
 			if(_if_list.size() > 0){
 
 				/*
@@ -303,8 +356,8 @@ public class InspectService extends Service {
 		_params.y = 100;
 		windowManager.addView(_top_view, _params);
 
-		_top_view_name = (LinearLayout)_top_view.findViewById(R.service.names);
-		_top_view_data = (LinearLayout)_top_view.findViewById(R.service.data);
+		_top_view_name = (LinearLayout)_top_view.findViewById(R.id.service_names);
+		_top_view_data = (LinearLayout)_top_view.findViewById(R.id.service_data);
 
 		conf = new NetCfg();
 		_interfaces = new ArrayList<InterfaceInfo>();
@@ -320,6 +373,7 @@ public class InspectService extends Service {
 		if(_scanner != null)
 			_scanner.post(send_new_scan);
 
+        _state = RUNNING;
 		updateWidgets();
 	}
 
@@ -334,7 +388,7 @@ public class InspectService extends Service {
 				changed = (_state != STOPPED);
 				_state = STOPPED;
 			}else if(state == 1){
-				changed = (_state != RUNNING);
+				changed = true;// useless here as we are already running since the create method (_state != RUNNING);
 				_state = RUNNING;
 			}else if(state == 2){
 				//start or stop
@@ -369,10 +423,18 @@ public class InspectService extends Service {
 					.getApplicationContext().getPackageName(),
 					R.layout.widget_service);
 			if(getState() == RUNNING){
-				remoteViews.setTextViewText(R.widget.text,getString(R.string.stop));
+				remoteViews.setTextViewText(R.id.widget_text,getString(R.string.stop));
 			}else{
-				remoteViews.setTextViewText(R.widget.text,getString(R.string.start));
+				remoteViews.setTextViewText(R.id.widget_text,getString(R.string.start));
 			}
+            // Prepare intent to launch on widget click
+            Intent serviceIntent = new Intent(this, InspectService.class);
+            serviceIntent.putExtra("state", 2);
+            // Launch intent on widget click
+            PendingIntent pendingIntent = PendingIntent.getService(this, 1, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.widget_service, pendingIntent);
+            remoteViews.setOnClickPendingIntent(R.id.widget_text, pendingIntent);
+
 			appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
 		}

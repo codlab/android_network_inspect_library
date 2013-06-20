@@ -15,6 +15,8 @@
  */
 package org.achartengine.util;
 
+import android.util.Log;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ public class MathHelper {
       int approxNumLabels) {
     FORMAT.setMaximumFractionDigits(5);
     List<Double> labels = new ArrayList<Double>();
-    approxNumLabels*=4;
+    //approxNumLabels*=4;
     double[] labelParams = computeLabels(start, end, approxNumLabels);
     // when the start > end the inc will be negative so it will still work
     int numLabels = 1 + (int) ((labelParams[1] - labelParams[0]) / labelParams[2]);

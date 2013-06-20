@@ -1,0 +1,19 @@
+<resources>
+	<string name="app_name">Conso Réseau</string>
+    <string name="activity_name">Visualisez votre conso réseau</string>
+    <string name="start">Démarrer</string>
+    <string name="stop">Arrêter</string>
+    
+    <string name="service_start">Démarrer l\'inspection</string>
+    <string name="service_stop">Stopper l\'inspection</string>
+    <string name="make_donation">Don</string>
+    <string name="dialog_donation_title">Don</string>
+    <string name="dialog_donation_message">Vous pouvez contribuer à cette application en effectuant un don</string>
+    <string name="dialog_donation_no_thx">Non merci</string>
+    <string name="dialog_donation_mini">Petit</string>
+    <string name="dialog_donation_max">Grand</string>
+    <string name="title_section_service">Service</string>
+    <string name="title_section_graph">Graphique</string>
+    <string name="purchased_don1">Merci d\'avoir effectué un don</string>
+    <string name="purchased_don2">Merci d\'avoir effectué un don</string>
+</resources>

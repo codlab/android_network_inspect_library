@@ -27,6 +27,7 @@ public class StartFragment extends SherlockFragment{
 			@Override
 			public void onClick(View arg0) {
 				Intent i = new Intent(getActivity(), InspectService.class);
+                i.putExtra("state",1);
 				getActivity().startService(i);
 			}
 			
@@ -37,6 +38,7 @@ public class StartFragment extends SherlockFragment{
 			@Override
 			public void onClick(View arg0) {
 				Intent i = new Intent(getActivity(), InspectService.class);
+                i.putExtra("state",0);
 				getActivity().stopService(i);
 			}
 			

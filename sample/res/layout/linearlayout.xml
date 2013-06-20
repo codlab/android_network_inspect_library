@@ -6,12 +6,12 @@
     android:baselineAligned="false"
     android:orientation="horizontal" >
 	<LinearLayout
-	    android:id="@+service/names"
+	    android:id="@+id/service_names"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" />
 	<LinearLayout
-	    android:id="@+service/data"
+	    android:id="@+id/service_data"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" />

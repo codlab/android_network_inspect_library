@@ -31,7 +31,7 @@ import android.graphics.Paint;
 /**
  * The time chart rendering class.
  */
-public class TimeChart extends LineChart {
+public class TimeChart extends CubicLineChart {
   /** The constant to identify this chart type. */
   public static final String TYPE = "Time";
   /** The number of milliseconds in a day. */
@@ -51,7 +51,7 @@ public class TimeChart extends LineChart {
    * @param renderer the multiple series renderer
    */
   public TimeChart(XYMultipleSeriesDataset dataset, XYMultipleSeriesRenderer renderer) {
-    super(dataset, renderer);
+    super(dataset, renderer,0.33f);
   }
 
   /**
@@ -98,6 +98,7 @@ public class TimeChart extends LineChart {
       DateFormat format = getDateFormat(xLabels.get(0), xLabels.get(length - 1));
       for (int i = 0; i < length; i++) {
         long label = Math.round(xLabels.get(i));
+          //Log.d("get label", "" + label);
         float xLabel = (float) (left + xPixelsPerUnit * (label - minX));
         if (showLabels) {
           paint.setColor(mRenderer.getXLabelsColor());
@@ -112,8 +113,7 @@ public class TimeChart extends LineChart {
         }
       }
     }
-    drawXTextLabels(xTextLabelLocations, canvas, paint, true, left, top, bottom, xPixelsPerUnit,
-        minX, maxX);
+    //drawXTextLabels(xTextLabelLocations, canvas, paint, true, left, top, bottom, xPixelsPerUnit,minX, maxX);
   }
 
   /**
@@ -129,9 +129,7 @@ public class TimeChart extends LineChart {
       try {
         format = new SimpleDateFormat(mDateFormat);
         return format;
-      } catch (Exception e) {
-        // do nothing here
-      }
+      } catch (Exception e) {}
     }
     DateFormat format = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
     double diff = end - start;

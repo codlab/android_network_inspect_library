@@ -23,9 +23,9 @@ public class ServiceWidgetProvider extends AppWidgetProvider {
 
 
 		if(InspectService.getState() == InspectService.RUNNING){
-			views.setTextViewText(R.widget.text, context.getString(R.string.stop));
+			views.setTextViewText(R.id.widget_text, context.getString(R.string.stop));
 		}else{
-			views.setTextViewText(R.widget.text, context.getString(R.string.start));
+			views.setTextViewText(R.id.widget_text, context.getString(R.string.start));
 		}
 
 		// Prepare intent to launch on widget click
@@ -33,8 +33,8 @@ public class ServiceWidgetProvider extends AppWidgetProvider {
 		serviceIntent.putExtra("state", 2);
 		// Launch intent on widget click
 		PendingIntent pendingIntent = PendingIntent.getService(context, 1, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-		views.setOnClickPendingIntent(R.widget.service, pendingIntent);
-		views.setOnClickPendingIntent(R.widget.text, pendingIntent);
+		views.setOnClickPendingIntent(R.id.widget_service, pendingIntent);
+		views.setOnClickPendingIntent(R.id.widget_text, pendingIntent);
 
 		for(int i=0;appWidgetId != null && i<appWidgetId.length;i++){
 			update(appWidgetManager, appWidgetId[i], views);

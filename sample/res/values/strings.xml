@@ -1,5 +1,6 @@
 <resources>
-	<string name="app_name">Dump my Interfaces</string>
+	<string name="app_name">Dump your data consumption</string>
+    <string name="activity_name">Dump your data consumption</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     
@@ -12,7 +13,7 @@
     <string name="dialog_donation_mini">Small One</string>
     <string name="dialog_donation_max">Big One</string>
     <string name="title_section_service">Service</string>
-    <string name="title_section_graph">Graphique</string>
+    <string name="title_section_graph">Graph</string>
     <string name="purchased_don1">Thanks for having purchased a donation</string>
     <string name="purchased_don2">Thanks for having purchased a donation</string>
 </resources>

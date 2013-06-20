@@ -77,6 +77,8 @@ public class DefaultRenderer implements Serializable {
   private int mLegendHeight = 0;
   /** The margins size. */
   private int[] mMargins = new int[] { 20, 30, 10, 20 };
+  /** The paddings size. */
+  private int[] mPaddings = new int[] { 0,0,0,0};
   /** A value to be used for scaling the chart. */
   private float mScale = 1;
   /** A flag for enabling the pan. */
@@ -667,6 +669,26 @@ public class DefaultRenderer implements Serializable {
   public void setLegendHeight(int height) {
     mLegendHeight = height;
   }
+
+    /**
+     * Returns the padding sizes. An array containing the paddings in this order:
+     * top, left, bottom, right
+     *
+     * @return the margin sizes
+     */
+    public int[] getPaddings() {
+        return mPaddings;
+    }
+
+    /**
+     * Sets the paddings, in pixels.
+     *
+     * @param paddings an array containing the padding size values, in this order:
+     *          top, left, bottom, right
+     */
+    public void setPaddings(int[] paddings) {
+        mPaddings = paddings;
+    }
 
   /**
    * Returns the margin sizes. An array containing the margins in this order:

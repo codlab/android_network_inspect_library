@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2009 - 2012 SC 4ViewSoft SRL
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.achartengine.model;
+
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -29,237 +31,307 @@ import org.achartengine.util.XYEntry;
  * scatter... charts.
  */
 public class XYSeries implements Serializable {
-  /** The series title. */
-  private String mTitle;
-  /** A map to contain values for X and Y axes and index for each bundle */
-  private final IndexXYMap<Double, Double> mXY = new IndexXYMap<Double, Double>();
-  /** The minimum value for the X axis. */
-  private double mMinX = MathHelper.NULL_VALUE;
-  /** The maximum value for the X axis. */
-  private double mMaxX = -MathHelper.NULL_VALUE;
-  /** The minimum value for the Y axis. */
-  private double mMinY = MathHelper.NULL_VALUE;
-  /** The maximum value for the Y axis. */
-  private double mMaxY = -MathHelper.NULL_VALUE;
-  /** The scale number for this series. */
-  private final int mScaleNumber;
+    /**
+     * The series title.
+     */
+    private String mTitle;
+    /**
+     * A map to contain values for X and Y axes and index for each bundle
+     */
+    private final IndexXYMap<Double, Double> mXY = new IndexXYMap<Double, Double>();
+    private final IndexXYMap<Double, Double> mXY8 = new IndexXYMap<Double, Double>();
+    private final IndexXYMap<Double, Double> mXY32 = new IndexXYMap<Double, Double>();
+    private final IndexXYMap<Double, Double> mXY256 = new IndexXYMap<Double, Double>();
+    /**
+     * The minimum value for the X axis.
+     */
+    private double mMinX = MathHelper.NULL_VALUE;
+    /**
+     * The maximum value for the X axis.
+     */
+    private double mMaxX = -MathHelper.NULL_VALUE;
+    /**
+     * The minimum value for the Y axis.
+     */
+    private double mMinY = MathHelper.NULL_VALUE;
+    /**
+     * The maximum value for the Y axis.
+     */
+    private double mMaxY = -MathHelper.NULL_VALUE;
+    /**
+     * The scale number for this series.
+     */
+    private final int mScaleNumber;
 
-  private boolean mInvisible=false;
-  
-  public void setInvisible(boolean state){
-    mInvisible = state;
-  }
-  
-  public boolean isInvisible(){
-    return mInvisible;
-  }
-  /**
-   * Builds a new XY series.
-   * 
-   * @param title the series title.
-   */
-  public XYSeries(String title) {
-    this(title, 0);
-  }
+    private boolean mInvisible = false;
 
-  /**
-   * Builds a new XY series.
-   * 
-   * @param title the series title.
-   * @param scaleNumber the series scale number
-   */
-  public XYSeries(String title, int scaleNumber) {
-    mTitle = title;
-    mScaleNumber = scaleNumber;
-    initRange();
-  }
-
-  public int getScaleNumber() {
-    return mScaleNumber;
-  }
-
-  /**
-   * Initializes the range for both axes.
-   */
-  private void initRange() {
-    mMinX = MathHelper.NULL_VALUE;
-    mMaxX = -MathHelper.NULL_VALUE;
-    mMinY = MathHelper.NULL_VALUE;
-    mMaxY = -MathHelper.NULL_VALUE;
-    int length = getItemCount();
-    for (int k = 0; k < length; k++) {
-      double x = getX(k);
-      double y = getY(k);
-      updateRange(x, y);
-    }
-  }
-
-  /**
-   * Updates the range on both axes.
-   * 
-   * @param x the new x value
-   * @param y the new y value
-   */
-  private void updateRange(double x, double y) {
-    mMinX = Math.min(mMinX, x);
-    mMaxX = Math.max(mMaxX, x);
-    mMinY = Math.min(mMinY, y);
-    mMaxY = Math.max(mMaxY, y);
-  }
-
-  /**
-   * Returns the series title.
-   * 
-   * @return the series title
-   */
-  public String getTitle() {
-    return mTitle;
-  }
-
-  /**
-   * Sets the series title.
-   * 
-   * @param title the series title
-   */
-  public void setTitle(String title) {
-    mTitle = title;
-  }
-
-  /**
-   * Adds a new value to the series.
-   * 
-   * @param x the value for the X axis
-   * @param y the value for the Y axis
-   */
-  public synchronized void add(double x, double y) {
-    mXY.put(x, y);
-    updateRange(x, y);
-  }
-
-  /**
-   * Removes an existing value from the series.
-   * 
-   * @param index the index in the series of the value to remove
-   */
-  public synchronized void remove(int index) {
-    XYEntry<Double, Double> removedEntry = mXY.removeByIndex(index);
-    double removedX = removedEntry.getKey();
-    double removedY = removedEntry.getValue();
-    if (removedX == mMinX || removedX == mMaxX || removedY == mMinY || removedY == mMaxY) {
-      initRange();
-    }
-  }
-
-  /**
-   * Removes all the existing values from the series.
-   */
-  public synchronized void clear() {
-    mXY.clear();
-    initRange();
-  }
-
-  /**
-   * Returns the X axis value at the specified index.
-   * 
-   * @param index the index
-   * @return the X value
-   */
-  public synchronized double getX(int index) {
-    return mXY.getXByIndex(index);
-  }
-
-  /**
-   * Returns the Y axis value at the specified index.
-   * 
-   * @param index the index
-   * @return the Y value
-   */
-  public synchronized double getY(int index) {
-    return mXY.getYByIndex(index);
-  }
-
-  /**
-   * Returns submap of x and y values according to the given start and end
-   * 
-   * @param start start x value
-   * @param stop stop x value
-   * @return a submap of x and y values
-   */
-  public synchronized SortedMap<Double, Double> getRange(double start, double stop,
-      int beforeAfterPoints) {
-    // we need to add one point before the start and one point after the end (if
-    // there are any)
-    // to ensure that line doesn't end before the end of the screen
-
-    // this would be simply: start = mXY.lowerKey(start) but NavigableMap is
-    // available since API 9
-    SortedMap<Double, Double> headMap = mXY.headMap(start);
-    if (!headMap.isEmpty()) {
-      start = headMap.lastKey();
+    public void setInvisible(boolean state) {
+        mInvisible = state;
     }
 
-    // this would be simply: end = mXY.higherKey(end) but NavigableMap is
-    // available since API 9
-    // so we have to do this hack in order to support older versions
-    SortedMap<Double, Double> tailMap = mXY.tailMap(stop);
-    if (!tailMap.isEmpty()) {
-      Iterator<Double> tailIterator = tailMap.keySet().iterator();
-      Double next = tailIterator.next();
-      if (tailIterator.hasNext()) {
-        stop = tailIterator.next();
-      } else {
-        stop += next;
-      }
+    public boolean isInvisible() {
+        return mInvisible;
     }
-    return new TreeMap<Double, Double>(mXY.subMap(start, stop));
-  }
 
-  public int getIndexForKey(double key) {
-    return mXY.getIndexForKey(key);
-  }
+    /**
+     * Builds a new XY series.
+     *
+     * @param title the series title.
+     */
+    public XYSeries(String title) {
+        this(title, 0);
+    }
 
-  /**
-   * Returns the series item count.
-   * 
-   * @return the series item count
-   */
-  public synchronized int getItemCount() {
-    return mXY.size();
-  }
+    /**
+     * Builds a new XY series.
+     *
+     * @param title       the series title.
+     * @param scaleNumber the series scale number
+     */
+    public XYSeries(String title, int scaleNumber) {
+        mTitle = title;
+        mScaleNumber = scaleNumber;
+        initRange();
+    }
 
-  /**
-   * Returns the minimum value on the X axis.
-   * 
-   * @return the X axis minimum value
-   */
-  public double getMinX() {
-    return mMinX;
-  }
+    public int getScaleNumber() {
+        return mScaleNumber;
+    }
 
-  /**
-   * Returns the minimum value on the Y axis.
-   * 
-   * @return the Y axis minimum value
-   */
-  public double getMinY() {
-    return mMinY;
-  }
+    /**
+     * Initializes the range for both axes.
+     */
+    private void initRange() {
+        mMinX = MathHelper.NULL_VALUE;
+        mMaxX = -MathHelper.NULL_VALUE;
+        mMinY = MathHelper.NULL_VALUE;
+        mMaxY = -MathHelper.NULL_VALUE;
+        int length = getItemCount();
+        for (int k = 0; k < length; k++) {
+            double x = getX(k);
+            double y = getY(k);
+            updateRange(x, y);
+        }
+    }
 
-  /**
-   * Returns the maximum value on the X axis.
-   * 
-   * @return the X axis maximum value
-   */
-  public double getMaxX() {
-    return mMaxX;
-  }
+    /**
+     * Updates the range on both axes.
+     *
+     * @param x the new x value
+     * @param y the new y value
+     */
+    private void updateRange(double x, double y) {
+        mMinX = Math.min(mMinX, x);
+        mMaxX = Math.max(mMaxX, x);
+        mMinY = Math.min(mMinY, y);
+        mMaxY = Math.max(mMaxY, y);
+    }
 
-  /**
-   * Returns the maximum value on the Y axis.
-   * 
-   * @return the Y axis maximum value
-   */
-  public double getMaxY() {
-    return mMaxY;
-  }
+    /**
+     * Returns the series title.
+     *
+     * @return the series title
+     */
+    public String getTitle() {
+        return mTitle;
+    }
+
+    /**
+     * Sets the series title.
+     *
+     * @param title the series title
+     */
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    /**
+     * Adds a new value to the series.
+     *
+     * @param x the value for the X axis
+     * @param y the value for the Y axis
+     */
+    public synchronized void add(double x, double y) {
+        add(x,y,mXY8,8);
+        add(x,y,mXY32,32);
+        add(x,y,mXY256,256);
+        mXY.put(x, y);
+        updateRange(x, y);
+    }
+    private void add(double x, double y, IndexXYMap<Double, Double> map, int count){
+        if(mXY.size() % count == 0){
+            map.put(x,y);
+        }else{
+            int idx =map.size()-1;
+            //map.lastEntry().setValue(map.lastEntry().getValue()+y);
+            if(y > map.getByIndex(idx).getValue() && idx >=0)
+                map.getByIndex(idx).setValue(y);
+        }
+    }
+
+    /**
+     * Removes an existing value from the series.
+     *
+     * @param index the index in the series of the value to remove
+     */
+    public synchronized void remove(int index) {
+        XYEntry<Double, Double> removedEntry = mXY.removeByIndex(index);
+        double removedX = removedEntry.getKey();
+        double removedY = removedEntry.getValue();
+        if (removedX == mMinX || removedX == mMaxX || removedY == mMinY || removedY == mMaxY) {
+            initRange();
+        }
+    }
+
+    /**
+     * Removes all the existing values from the series.
+     */
+    public synchronized void clear() {
+        mXY.clear();
+        initRange();
+    }
+
+    /**
+     * Returns the X axis value at the specified index.
+     *
+     * @param index the index
+     * @return the X value
+     */
+    public synchronized double getX(int index) {
+        return mXY.getXByIndex(index);
+    }
+
+    /**
+     * Returns the Y axis value at the specified index.
+     *
+     * @param index the index
+     * @return the Y value
+     */
+    public synchronized double getY(int index) {
+        return mXY.getYByIndex(index);
+    }
+
+    /**
+     * Returns submap of x and y values according to the given start and end
+     *
+     * @param start start x value
+     * @param stop  stop x value
+     * @return a submap of x and y values
+     */
+    public synchronized SortedMap<Double, Double> getRange(double start, double stop,
+                                                           int beforeAfterPoints) {
+        // we need to add one point before the start and one point after the end (if
+        // there are any)
+        // to ensure that line doesn't end before the end of the screen
+
+        // this would be simply: start = mXY.lowerKey(start) but NavigableMap is
+        // available since API 9
+        SortedMap<Double, Double> headMap = mXY.headMap(start);
+        if (!headMap.isEmpty()) {
+            start = headMap.lastKey();
+        }
+
+        // this would be simply: end = mXY.higherKey(end) but NavigableMap is
+        // available since API 9
+        // so we have to do this hack in order to support older versions
+        SortedMap<Double, Double> tailMap = mXY.tailMap(stop);
+        if (!tailMap.isEmpty()) {
+            Iterator<Double> tailIterator = tailMap.keySet().iterator();
+            Double next = tailIterator.next();
+            if (tailIterator.hasNext()) {
+                stop = tailIterator.next();
+            } else {
+                stop += next;
+            }
+        }
+
+        SortedMap<Double, Double> res = mXY.subMap(start, stop);
+        if (res.size() > 400) {
+            res = internalgetRange(start, stop, beforeAfterPoints, mXY8, 400);
+            if(res.size() > 400){
+                res = internalgetRange(start, stop, beforeAfterPoints, mXY32, 400);
+                if(res.size() > 400){
+                    res = internalgetRange(start, stop, beforeAfterPoints, mXY256, 400);
+                }
+            }
+        }
+        return new TreeMap<Double, Double>(res);
+    }
+
+    private SortedMap<Double, Double> internalgetRange(double start, double stop,
+                                                           int beforeAfterPoints, IndexXYMap<Double, Double> map, int count) {
+        SortedMap<Double, Double> headMap = map.headMap(start);
+        if (!headMap.isEmpty()) {
+            start = headMap.lastKey();
+        }
+
+        // this would be simply: end = mXY.higherKey(end) but NavigableMap is
+        // available since API 9
+        // so we have to do this hack in order to support older versions
+        SortedMap<Double, Double> tailMap = map.tailMap(stop);
+        if (!tailMap.isEmpty()) {
+            Iterator<Double> tailIterator = tailMap.keySet().iterator();
+            Double next = tailIterator.next();
+            if (tailIterator.hasNext()) {
+                stop = tailIterator.next();
+            } else {
+                stop += next;
+            }
+        }
+
+        //if (map.subMap(start, stop).size() < count) {
+            return map.subMap(start, stop);
+        //} else {
+            //return null;
+        //}
+    }
+
+    public int getIndexForKey(double key) {
+        return mXY.getIndexForKey(key);
+    }
+
+    /**
+     * Returns the series item count.
+     *
+     * @return the series item count
+     */
+    public synchronized int getItemCount() {
+        return mXY.size();
+    }
+
+    /**
+     * Returns the minimum value on the X axis.
+     *
+     * @return the X axis minimum value
+     */
+    public double getMinX() {
+        return mMinX;
+    }
+
+    /**
+     * Returns the minimum value on the Y axis.
+     *
+     * @return the Y axis minimum value
+     */
+    public double getMinY() {
+        return mMinY;
+    }
+
+    /**
+     * Returns the maximum value on the X axis.
+     *
+     * @return the X axis maximum value
+     */
+    public double getMaxX() {
+        return mMaxX;
+    }
+
+    /**
+     * Returns the maximum value on the Y axis.
+     *
+     * @return the Y axis maximum value
+     */
+    public double getMaxY() {
+        return mMaxY;
+    }
 }

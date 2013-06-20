@@ -86,6 +86,10 @@ public class Zoom extends AbstractTool {
         double newXMax = centerX + newWidth / 2;
         double newYMin = centerY - newHeight / 2;
         double newYMax = centerY + newHeight / 2;
+          if(mRenderer.isZoomY0Based()){
+              newYMin = mRenderer.getYAxisMin();//centerY - newHeight / 2;
+              newYMax = centerY + newHeight / 2 - newYMin;
+          }
 
         // if already reached last zoom, then it will always set to reached
         if (i == 0) {
@@ -125,8 +129,13 @@ public class Zoom extends AbstractTool {
           setXRange(newXMin, newXMax, i);
         }
         if (mRenderer.isZoomYEnabled() && (zoom_axis == ZOOM_AXIS_Y || zoom_axis == ZOOM_AXIS_XY)) {
-          newYMin = centerY - newHeight / 2;
-          newYMax = centerY + newHeight / 2;
+            if(mRenderer.isZoomY0Based()){
+          newYMin = mRenderer.getYAxisMin();//centerY - newHeight / 2;
+          newYMax = centerY + newHeight / 2 - newYMin;
+            }else{
+                newYMin = centerY - newHeight / 2;
+                newYMax = centerY + newHeight / 2;
+            }
           setYRange(newYMin, newYMax, i);
         }
       }

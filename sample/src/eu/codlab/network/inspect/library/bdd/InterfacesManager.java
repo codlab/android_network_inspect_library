@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.util.Log;
+
+import eu.codlab.network.inspect.app.library.Batterie;
 import eu.codlab.network.inspect.app.library.InterfaceInfo;
 
 public class InterfacesManager {
@@ -91,6 +93,17 @@ public class InterfacesManager {
 		Log.d("addData",interface_object.toString()+" "+up+" "+down);
 		return _sgbd.addData(interface_object.id, up, down, System.currentTimeMillis(), interface_object.flag, interface_object.address);
 	}
+
+    public void serviceNew(Batterie _interface) {
+        Log.d("serviceNew",_interface.toString());
+        if(this.hasInterface(_interface.name)){
+        }else{
+            Log.d("serviceNew",_interface.name);
+            Interface inter = addInterface(_interface.name, true, "", "");
+            inter.up=true;
+            _sgbd.updateInterface(inter.id, inter.up);
+        }
+    }
 
 	public void serviceNew(InterfaceInfo _interface) {
 		Log.d("serviceNew",_interface.toString());

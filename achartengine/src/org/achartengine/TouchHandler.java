@@ -21,37 +21,31 @@ import org.achartengine.chart.XYChart;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.tools.Pan;
 import org.achartengine.tools.PanListener;
-import org.achartengine.tools.Zoom;
 import org.achartengine.tools.ZoomListener;
 
 import android.graphics.RectF;
 import android.view.MotionEvent;
 
 /**
- * The main handler of the touch events.
+ * A handler implementation for touch events for older platforms.
  */
-public class TouchHandler implements ITouchHandler {
+public class
+        TouchHandler implements ITouchHandler {
   /** The chart renderer. */
   private DefaultRenderer mRenderer;
   /** The old x coordinate. */
   private float oldX;
   /** The old y coordinate. */
   private float oldY;
-  /** The old x2 coordinate. */
-  private float oldX2;
-  /** The old y2 coordinate. */
-  private float oldY2;
   /** The zoom buttons rectangle. */
   private RectF zoomR = new RectF();
   /** The pan tool. */
   private Pan mPan;
-  /** The zoom for the pinch gesture. */
-  private Zoom mPinchZoom;
   /** The graphical view. */
   private GraphicalView graphicalView;
 
   /**
-   * Creates a new graphical view.
+   * Creates an implementation of the old version of the touch handler.
    * 
    * @param view the graphical view
    * @param chart the chart to be drawn
@@ -67,58 +61,16 @@ public class TouchHandler implements ITouchHandler {
     if (mRenderer.isPanEnabled()) {
       mPan = new Pan(chart);
     }
-    if (mRenderer.isZoomEnabled()) {
-      mPinchZoom = new Zoom(chart, true, 1);
-    }
   }
 
-  /**
-   * Handles the touch event.
-   * 
-   * @param event the touch event
-   */
   public boolean handleTouch(MotionEvent event) {
     int action = event.getAction();
     if (mRenderer != null && action == MotionEvent.ACTION_MOVE) {
       if (oldX >= 0 || oldY >= 0) {
-        float newX = event.getX(0);
-        float newY = event.getY(0);
-        if (event.getPointerCount() > 1 && (oldX2 >= 0 || oldY2 >= 0) && mRenderer.isZoomEnabled()) {
-          float newX2 = event.getX(1);
-          float newY2 = event.getY(1);
-          float newDeltaX = Math.abs(newX - newX2);
-          float newDeltaY = Math.abs(newY - newY2);
-          float oldDeltaX = Math.abs(oldX - oldX2);
-          float oldDeltaY = Math.abs(oldY - oldY2);
-          float zoomRate = 1;
-
-          float tan1 = Math.abs(newY - oldY) / Math.abs(newX - oldX);
-          float tan2 = Math.abs(newY2 - oldY2) / Math.abs(newX2 - oldX2);
-          /*if (tan1 <= 0.25 && tan2 <= 0.25) {
-            // horizontal pinch zoom, |deltaY| / |deltaX| is [0 ~ 0.25], 0.25 is
-            // the approximate value of tan(PI / 12)
-            zoomRate = newDeltaX / oldDeltaX;
-            applyZoom(zoomRate, Zoom.ZOOM_AXIS_X);
-          } else if (tan1 >= 3.73 && tan2 >= 3.73) {
-            // pinch zoom vertically, |deltaY| / |deltaX| is [3.73 ~ infinity],
-            // 3.732 is the approximate value of tan(PI / 2 - PI / 12)
-            zoomRate = newDeltaY / oldDeltaY;
-            applyZoom(zoomRate, Zoom.ZOOM_AXIS_Y);
-          } else */{
-            // pinch zoom diagonally
-            if (Math.abs(newX - oldX) >= Math.abs(newY - oldY)) {
-              zoomRate = newDeltaX / oldDeltaX;
-            } else {
-              zoomRate = newDeltaY / oldDeltaY;
-            }
-            applyZoom(zoomRate, Zoom.ZOOM_AXIS_XY);
-          }
-          oldX2 = newX2;
-          oldY2 = newY2;
-        } else if (mRenderer.isPanEnabled()) {
+        float newX = event.getX();
+        float newY = event.getY();
+        if (mRenderer.isPanEnabled()) {
           mPan.apply(oldX, oldY, newX, newY);
-          oldX2 = 0;
-          oldY2 = 0;
         }
         oldX = newX;
         oldY = newY;
@@ -126,8 +78,8 @@ public class TouchHandler implements ITouchHandler {
         return true;
       }
     } else if (action == MotionEvent.ACTION_DOWN) {
-      oldX = event.getX(0);
-      oldY = event.getY(0);
+      oldX = event.getX();
+      oldY = event.getY();
       if (mRenderer != null && mRenderer.isZoomEnabled() && zoomR.contains(oldX, oldY)) {
         if (oldX < zoomR.left + zoomR.width() / 3) {
           graphicalView.zoomIn();
@@ -138,24 +90,11 @@ public class TouchHandler implements ITouchHandler {
         }
         return true;
       }
-    } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
+    } else if (action == MotionEvent.ACTION_UP) {
       oldX = 0;
       oldY = 0;
-      oldX2 = 0;
-      oldY2 = 0;
-      if (action == MotionEvent.ACTION_POINTER_UP) {
-        oldX = -1;
-        oldY = -1;
-      }
     }
     return !mRenderer.isClickEnabled();
-  }
-
-  private void applyZoom(float zoomRate, int axis) {
-    if (zoomRate > 0.8 && zoomRate < 1.2) {
-      mPinchZoom.setZoomRate(zoomRate);
-      mPinchZoom.apply(axis);
-    }
   }
 
   /**
@@ -164,9 +103,6 @@ public class TouchHandler implements ITouchHandler {
    * @param listener zoom listener
    */
   public void addZoomListener(ZoomListener listener) {
-    if (mPinchZoom != null) {
-      mPinchZoom.addZoomListener(listener);
-    }
   }
 
   /**
@@ -175,9 +111,6 @@ public class TouchHandler implements ITouchHandler {
    * @param listener zoom listener
    */
   public void removeZoomListener(ZoomListener listener) {
-    if (mPinchZoom != null) {
-      mPinchZoom.removeZoomListener(listener);
-    }
   }
 
   /**
@@ -201,4 +134,5 @@ public class TouchHandler implements ITouchHandler {
       mPan.removePanListener(listener);
     }
   }
+
 }
