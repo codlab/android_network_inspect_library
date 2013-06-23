@@ -39,6 +39,8 @@ import android.graphics.RectF;
  * An abstract class to be implemented by the chart rendering classes.
  */
 public abstract class AbstractChart implements Serializable {
+    protected final static float LEGEND_SIZE = 32f;
+
     /**
      * The graphical representation of the chart.
      *
@@ -108,7 +110,7 @@ public abstract class AbstractChart implements Serializable {
      */
     protected int drawLegend(Canvas canvas, DefaultRenderer renderer, String[] titles, int left,
                              int right, int y, int width, int height, int legendSize, Paint paint, boolean calculate) {
-        float size = 32;
+        float size = LEGEND_SIZE;
         if (renderer.isShowLegend()) {
             float currentX = left;
             float currentY = y + height - legendSize + size;

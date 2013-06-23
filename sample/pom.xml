@@ -38,6 +38,22 @@
 
         <dependency>
             <groupId>eu.codlab.network</groupId>
+            <artifactId>SmartExtensionAPI</artifactId>
+            <version>${project.version}</version>
+            <type>apklib</type>
+        </dependency>
+
+
+        <dependency>
+            <groupId>eu.codlab.network</groupId>
+            <artifactId>SmartExtensionUtils</artifactId>
+            <version>${project.version}</version>
+            <type>apklib</type>
+        </dependency>
+
+
+        <dependency>
+            <groupId>eu.codlab.network</groupId>
             <artifactId>actionbarsherlock</artifactId>
             <version>${project.version}</version>
             <type>apklib</type>

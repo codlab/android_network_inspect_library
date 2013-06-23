@@ -85,7 +85,6 @@ public class LineChart extends XYChart {
         int length = points.length;
         XYSeriesRenderer renderer = (XYSeriesRenderer) seriesRenderer;
         float lineWidth = paint.getStrokeWidth();
-        Log.d("renderer.getLineWidth()", "" + renderer.getLineWidth());
         paint.setStrokeWidth(renderer.getLineWidth());
         if (renderer.isFillBelowLine()) {
             paint.setColor(renderer.getFillBelowLineColor());

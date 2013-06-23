@@ -7,5 +7,6 @@
    		 android:updatePeriodMillis="0"
          android:previewImage="@drawable/radio"
    		 android:initialLayout="@layout/widget_service"
-   		 android:widgetCategory="keyguard|home_screen"
-/>
+         android:widgetCategory="keyguard|home_screen"
+        />
+<!-- android:widgetCategory="keyguard|home_screen" -->

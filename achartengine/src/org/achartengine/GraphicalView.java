@@ -226,7 +226,7 @@ public class GraphicalView extends View {
             if (mRenderer != null && mRenderer.isZoomEnabled() && mRenderer.isZoomButtonsVisible()) {
                 mPaint.setColor(ZOOM_BUTTONS_COLOR);
                 zoomSize = Math.max(zoomSize, Math.min(width, height) / 7);
-                top -= 100;
+                top -= 150;
                 mZoomR.set(left + width - zoomSize * 3, top + height - zoomSize * 0.775f, left + width, top
                         + height);
                 canvas.drawRoundRect(mZoomR, zoomSize / 3, zoomSize / 3, mPaint);

@@ -45,10 +45,10 @@ public class RealTimeLayout extends LinearLayout{
 			0xff66cd00,
 			Color.RED,
 			0xff0092e9,
-			Color.GREEN,
+			0xff669a33,
 			Color.GRAY,
 			Color.MAGENTA,
-			0xffe0fe07,
+			0xf9a09a07,
 			Color.BLACK,
 			Color.DKGRAY,
 			Color.LTGRAY};
@@ -74,18 +74,28 @@ public class RealTimeLayout extends LinearLayout{
 		renderer.setChartTitle("Time");
 		renderer.setChartTitleTextSize(15);
 		renderer.setFitLegend(true);
+        renderer.setShowLabels(false);//no data
 		renderer.setGridColor(Color.LTGRAY);
         renderer.setInScroll(true);
         renderer.setMargins(new int[]{40,40,40,40});
-        renderer.setPaddings(new int[]{30,40,40,40});
+        renderer.setPaddings(new int[]{30,10,40,40});
 		renderer.setPointSize(6);
 		renderer.setYAxisMin(-200);
+        renderer.setShowAxes(false);
         renderer.setShowGrid(true);
         renderer.setShowGridY(false);
         renderer.setPanLimits(new double[]{0, Double.MAX_VALUE, -200, Double.MAX_VALUE});
         renderer.setPanEnabled(true,false);
 		renderer.setLabelsTextSize(12);
-        renderer.setLegendTextSize(25);
+        renderer.setLabelsColor(0xff000000);
+        renderer.setLegendTextSize(35);
+
+        renderer.setMarginsColor(0xffeeeeee);
+        renderer.setLegendBackgroundColor(0xffdddddd);
+        renderer.setXLabelsColor(0xff000000);
+        renderer.setAxesColor(0xff);
+
+
 		//renderer.setClickEnabled(true);
         renderer.setZoomY0Based(true);
         renderer.setZoomEnabled(true,false);
@@ -99,8 +109,8 @@ public class RealTimeLayout extends LinearLayout{
 
 
 		view = ChartFactory.getTimeChartView(_context, dataset, renderer,"Time", true, true);//"HH"+":mm MM/dd/yyyy"
-		view.refreshDrawableState();
-		view.repaint();
+		//view.refreshDrawableState();
+		//view.repaint();
 
         addView(view);
 
@@ -274,6 +284,7 @@ public class RealTimeLayout extends LinearLayout{
 		    new_renderer_up.setLineWidth(5);
             rendererSeries.add(new_renderer_up);
             renderer.addSeriesRenderer(new_renderer_up);
+            renderer.setShowLabels(true);
             dataset.addSeries(new_series_up);
         }
 
@@ -290,6 +301,7 @@ public class RealTimeLayout extends LinearLayout{
             new_renderer_down.setFillBelowLineColor(0x22ffffff & color);
     	    rendererSeries.add(new_renderer_down);
             renderer.addSeriesRenderer(new_renderer_down);
+            renderer.setShowLabels(true);
             dataset.addSeries(new_series_down);
         }
         addThread(new_series_up, new_series_down, interface_);

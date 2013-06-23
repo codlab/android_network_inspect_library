@@ -344,8 +344,10 @@ public abstract class XYChart extends AbstractChart {
         }
 
         // draw stuff over the margins such as data doesn't render on these areas
-        drawBackground(mRenderer, canvas, x, bottom, width, height - bottom, paint, true,
+        drawBackground(mRenderer, canvas, x, bottom, width, bottom - y, paint, true,
                 mRenderer.getMarginsColor());
+        drawBackground(mRenderer, canvas, x, (int)(y + height - legendSize + LEGEND_SIZE - mRenderer.getLegendTextSize()/2 - 10), width, (int)(height - (y + height - legendSize + LEGEND_SIZE - 10) + mRenderer.getLegendTextSize()/2), paint, true,
+                mRenderer.getLegendBackgroundColor());
         drawBackground(mRenderer, canvas, x, y, width, margins[0], paint, true,
                 mRenderer.getMarginsColor());
         if (or == Orientation.HORIZONTAL) {
@@ -387,12 +389,12 @@ public abstract class XYChart extends AbstractChart {
                 if (mRenderer.getXLabelsAlign() == Align.LEFT) {
                     xLabelsLeft += mRenderer.getLabelsTextSize() / 4;
                 }
+                drawXLabels(xLabels, mRenderer.getXTextLabelLocations(), canvas, paint, xLabelsLeft, top,
+                        bottom, xPixelsPerUnit[0], minX[0], maxX[0]);
+                drawYLabels(allYLabels, canvas, paint, maxScaleNumber, left, right, bottom - paddings[2], yPixelsPerUnit,
+                        minY, paddings[1], paddings[3]);
             }
-            drawXLabels(xLabels, mRenderer.getXTextLabelLocations(), canvas, paint, xLabelsLeft, top,
-                    bottom, xPixelsPerUnit[0], minX[0], maxX[0]);
-            drawYLabels(allYLabels, canvas, paint, maxScaleNumber, left, right, bottom - paddings[2], yPixelsPerUnit,
-                    minY, paddings[1], paddings[3]);
-
+            //fix here, moved up
 
             if (showLabels) {
                 paint.setColor(mRenderer.getLabelsColor());

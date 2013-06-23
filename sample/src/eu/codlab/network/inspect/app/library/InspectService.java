@@ -29,6 +29,8 @@ import eu.codlab.network.inspect.library.kernel.NetCfg.FastInfos;
 import eu.codlab.network.inspect.library.kernel.RmnetStatisticsInfo;
 
 public class InspectService extends Service {
+    private static InspectService _this;
+
 	private InterfacesManager _manager;
 
 	private InterfacesManager getManager(){
@@ -58,6 +60,31 @@ public class InspectService extends Service {
 	private LinearLayout _top_view_data;
 	private Handler _scanner;
 	private ArrayList<InterfaceInfo> _interfaces;
+    public ArrayList<InterfaceInfo> getCurrentInterfaces(){
+        if(_interfaces == null)_interfaces = new ArrayList<InterfaceInfo>();
+        return _interfaces;
+    };
+
+    public static InspectService getInstance(){
+        return _this;
+    }
+
+    public int getInterfaceSize(){
+        return getCurrentInterfaces().size() +1;
+    }
+
+    public String[] getInterfaceString(int i){
+        if(i == 0 || i > _interfaces.size()){
+            return new String[]{_batterie.name,_batterie.percent+"%"};
+        }else{
+            i--;
+            InterfaceInfo _if = getCurrentInterfaces().get(i);
+            String res = _if.name;
+            String val=getNormalized(_if.if_scan.getTXBytes())+"/"+getNormalized(_if.if_scan.getRXBytes());
+            return new String[]{res, val};
+        }
+    }
+
     private Batterie _batterie;
 
 	private final static int REFRESH_INTERVAL_MS = 2500;
@@ -211,7 +238,7 @@ public class InspectService extends Service {
             _batterie.view_data.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 7);
 
             try{
-                _batterie.percent = Double.parseDouble(DumpKernelVariableHelper.dump("/sys/class/power_supply/battery/capacity"));
+                _batterie.percent = Double.parseDouble(getBatteryFromKernel());
             }catch(Exception e){}
 
             _batterie.just_changed = true;
@@ -223,6 +250,11 @@ public class InspectService extends Service {
             }catch(Exception e){}
         }
     }
+
+    public static String getBatteryFromKernel(){
+        return DumpKernelVariableHelper.dump("/sys/class/power_supply/battery/capacity");
+    }
+
 	/*
 	 * scenarios
 	 * interface > presente dans vue
@@ -340,6 +372,8 @@ public class InspectService extends Service {
 	@Override public void onCreate() {
 		super.onCreate();
 
+        _this = this;
+
 		_delta_scan = 0;
 		_delta_save = 0;
 		_scanner = new Handler();
@@ -422,14 +456,15 @@ public class InspectService extends Service {
 			RemoteViews remoteViews = new RemoteViews(this
 					.getApplicationContext().getPackageName(),
 					R.layout.widget_service);
+            Intent serviceIntent = new Intent(this, InspectService.class);
 			if(getState() == RUNNING){
 				remoteViews.setTextViewText(R.id.widget_text,getString(R.string.stop));
+                serviceIntent.putExtra("state", 0);
 			}else{
 				remoteViews.setTextViewText(R.id.widget_text,getString(R.string.start));
+                serviceIntent.putExtra("state", 1);
 			}
             // Prepare intent to launch on widget click
-            Intent serviceIntent = new Intent(this, InspectService.class);
-            serviceIntent.putExtra("state", 2);
             // Launch intent on widget click
             PendingIntent pendingIntent = PendingIntent.getService(this, 1, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_service, pendingIntent);
@@ -445,6 +480,7 @@ public class InspectService extends Service {
 		super.onDestroy();
 
 		_state = STOPPED;
+        _this = null;
 
 		manageClean();
 		updateWidgets();

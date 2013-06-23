@@ -23,6 +23,7 @@ import org.achartengine.util.MathHelper;
 
 import android.graphics.Color;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 /**
  * Multiple XY series renderer.
@@ -64,6 +65,8 @@ public class XYMultipleSeriesRenderer extends DefaultRenderer {
   private double mBarSpacing = 0;
   /** The margins colors. */
   private int mMarginsColor = NO_COLOR;
+  /** The legend background colors. */
+  private int mLegendBackgroundColor = NO_COLOR;
   /** The pan limits. */
   private double[] mPanLimits;
   /** The zoom limits. */
@@ -842,6 +845,24 @@ public class XYMultipleSeriesRenderer extends DefaultRenderer {
   public void setBarSpacing(double spacing) {
     mBarSpacing = spacing;
   }
+
+    /**
+     * Returns the legend background color.
+     *
+     * @return the legend background color
+     */
+    public int getLegendBackgroundColor() {
+        return mLegendBackgroundColor;
+    }
+
+    /**
+     * Sets the color of the legend background.
+     *
+     * @param color the legend background color
+     */
+    public void setLegendBackgroundColor(int color) {
+        mLegendBackgroundColor = color;
+    }
 
   /**
    * Returns the margins color.

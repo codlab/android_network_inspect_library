@@ -18,6 +18,8 @@
         <module>library</module>
         <module>actionbarsherlock</module>
         <module>sample</module>
+        <module>SmartExtensionAPI</module>
+        <module>SmartExtensionUtils</module>
     </modules>
 
     <scm>

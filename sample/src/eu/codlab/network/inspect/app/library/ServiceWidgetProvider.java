@@ -22,15 +22,16 @@ public class ServiceWidgetProvider extends AppWidgetProvider {
 		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_service);
 
 
+        Intent serviceIntent = new Intent(context, InspectService.class);
 		if(InspectService.getState() == InspectService.RUNNING){
 			views.setTextViewText(R.id.widget_text, context.getString(R.string.stop));
+            serviceIntent.putExtra("state", 0);
 		}else{
 			views.setTextViewText(R.id.widget_text, context.getString(R.string.start));
+            serviceIntent.putExtra("state", 1);
 		}
 
 		// Prepare intent to launch on widget click
-		Intent serviceIntent = new Intent(context, InspectService.class);
-		serviceIntent.putExtra("state", 2);
 		// Launch intent on widget click
 		PendingIntent pendingIntent = PendingIntent.getService(context, 1, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 		views.setOnClickPendingIntent(R.id.widget_service, pendingIntent);
